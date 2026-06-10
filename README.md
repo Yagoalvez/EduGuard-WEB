@@ -23,7 +23,7 @@ O EduGuard tem como objetivo facilitar a organização da escola, melhorar a com
 * Matrícula automática.
 * Busca por nome e matrícula.
 * Filtro por turma.
-* Ativação/desativação.
+* Ativação e desativação.
 * Remoção segura, preservando histórico quando necessário.
 
 ### Responsáveis / Famílias
@@ -35,7 +35,7 @@ O EduGuard tem como objetivo facilitar a organização da escola, melhorar a com
 * Ativação e desativação de acesso.
 * Reativação de acesso.
 * Remoção segura quando permitido.
-* Responsável inativo não consegue acessar o portal.
+* Bloqueio de acesso para responsáveis inativos.
 
 ### Funcionários / Equipe
 
@@ -45,14 +45,14 @@ O EduGuard tem como objetivo facilitar a organização da escola, melhorar a com
 * Filtro por função.
 * Ativação e desativação de acesso.
 * Reativação de acesso.
-* Bloqueio de login para funcionário inativo.
-* Proteção para impedir que o diretor logado remova/desative a si mesmo.
+* Bloqueio de login para funcionários inativos.
+* Proteção para impedir que o diretor logado remova ou desative a si mesmo.
 
 ### Turmas
 
 * Cadastro de turmas.
 * Edição de turmas.
-* Ativação/desativação.
+* Ativação e desativação.
 * Enturmação de alunos.
 * Remoção de aluno da turma.
 * Busca rápida de aluno por nome ou matrícula.
@@ -62,11 +62,11 @@ O EduGuard tem como objetivo facilitar a organização da escola, melhorar a com
 * Registro de entrada.
 * Registro de saída.
 * Validação de CPF do responsável na saída.
-* Controle para impedir entrada duplicada.
-* Controle para impedir saída duplicada.
+* Bloqueio de entrada duplicada no mesmo dia.
+* Bloqueio de saída duplicada no mesmo dia.
 * Filtro por turma.
 * Busca por nome ou matrícula.
-* Exibição de registros computados do dia.
+* Exibição dos registros computados do dia.
 * Acesso restrito a Diretor e Porteiro.
 
 ### Rotina Diária
@@ -87,7 +87,7 @@ O EduGuard tem como objetivo facilitar a organização da escola, melhorar a com
 * Comunicados para responsáveis específicos.
 * Resposta de responsáveis.
 * Visualização das respostas pelos funcionários autorizados.
-* Remoção de comunicado.
+* Remoção de comunicados.
 
 ### Portal do Responsável
 
@@ -112,17 +112,6 @@ O EduGuard tem como objetivo facilitar a organização da escola, melhorar a com
 * Exibição de data e hora.
 * Logs com nomes reais em vez de IDs técnicos.
 * Apoio à auditoria e rastreabilidade do sistema.
-
----
-
-## Funcionalidades removidas
-
-As funcionalidades abaixo foram removidas da navegação e do fluxo principal do sistema:
-
-* Dashboard.
-* Medicação.
-
-As estruturas do banco não foram alteradas. A remoção foi feita apenas no uso da aplicação, menus, rotas e chamadas do sistema.
 
 ---
 
@@ -156,9 +145,9 @@ Pode acessar:
 
 ### Professor
 
-Perfil voltado ao acompanhamento pedagógico e rotina.
+Perfil voltado ao acompanhamento pedagógico e à rotina escolar.
 
-Pode acessar módulos permitidos conforme regra do sistema, sem acesso ao Registro de Frequência.
+Pode acessar módulos permitidos conforme as regras do sistema, sem acesso ao Registro de Frequência.
 
 ### Secretário / Coordenador
 
@@ -195,7 +184,7 @@ Pode visualizar:
 * TypeScript
 * Prisma ORM
 * JWT
-* Bcrypt
+* bcrypt
 * Multer
 
 ### Banco de dados
@@ -246,7 +235,7 @@ eduguard/
 │   │   ├── pages/
 │   │   ├── components/
 │   │   ├── services/
-│   │   ├── contexts/
+│   │   ├── context/
 │   │   ├── App.jsx
 │   │   └── main.jsx
 │   ├── package.json
