@@ -207,23 +207,27 @@ export const Responsaveis = () => {
     )},
     { header: 'Ações', render: (row) => (
       <div style={{ display: 'flex', gap: '0.5rem' }}>
-        <Button variant="outline" onClick={(e) => handleEdit(e, row)} style={{ padding: '0.25rem 0.5rem' }}>
-          <Edit2 size={14} />
-        </Button>
-        <Button size="sm" variant="outline" onClick={async (e) => {
-          e.stopPropagation();
-          const confirmMsg = row.ativo 
-            ? "Deseja desativar o acesso deste responsável? Ele continuará cadastrado, mas não poderá acessar o sistema."
-            : "Deseja ativar novamente o acesso deste responsável?";
-          if(window.confirm(confirmMsg)) {
-            try { 
-              await api.patch(`/responsaveis/${row.id}/status`, { ativo: !row.ativo }); 
-              fetchResponsaveis(); 
-            } catch(err) { alert(err.message || err); }
-          }
-        }} title={row.ativo ? "Desativar Acesso" : "Ativar Acesso"}>
-          {row.ativo ? <ShieldOff size={14} style={{ color: 'var(--danger)' }} /> : <UserPlus size={14} style={{ color: 'var(--success)' }} />}
-        </Button>
+        <RoleGuard allowedRoles={['diretor', 'coordenador', 'secretário']}>
+          <Button variant="outline" onClick={(e) => handleEdit(e, row)} style={{ padding: '0.25rem 0.5rem' }}>
+            <Edit2 size={14} />
+          </Button>
+        </RoleGuard>
+        <RoleGuard allowedRoles={['diretor', 'coordenador', 'secretário']}>
+          <Button size="sm" variant="outline" onClick={async (e) => {
+            e.stopPropagation();
+            const confirmMsg = row.ativo 
+              ? "Deseja desativar o acesso deste responsável? Ele continuará cadastrado, mas não poderá acessar o sistema."
+              : "Deseja ativar novamente o acesso deste responsável?";
+            if(window.confirm(confirmMsg)) {
+              try { 
+                await api.patch(`/responsaveis/${row.id}/status`, { ativo: !row.ativo }); 
+                fetchResponsaveis(); 
+              } catch(err) { alert(err.message || err); }
+            }
+          }} title={row.ativo ? "Desativar Acesso" : "Ativar Acesso"}>
+            {row.ativo ? <ShieldOff size={14} style={{ color: 'var(--danger)' }} /> : <UserPlus size={14} style={{ color: 'var(--success)' }} />}
+          </Button>
+        </RoleGuard>
         <RoleGuard allowedRoles={['diretor']}>
           <Button variant="outline" onClick={async (e) => {
             e.stopPropagation();
@@ -249,10 +253,12 @@ export const Responsaveis = () => {
           <h1 style={PAGE_STYLES.pageTitle}>Famílias (Responsáveis)</h1>
           <p style={PAGE_STYLES.pageSubtitle}>Gerencie os pais e responsáveis legais dos alunos</p>
         </div>
-        <Button onClick={() => {
-          setFormData({ id: null, nome: '', cpf: '', celular: '', descricao_tipo: 'Mãe', email: '', foto: null });
-          setIsModalOpen(true);
-        }}><Plus size={16} /> Novo Responsável</Button>
+        <RoleGuard allowedRoles={['diretor', 'coordenador', 'secretário']}>
+          <Button onClick={() => {
+            setFormData({ id: null, nome: '', cpf: '', celular: '', descricao_tipo: 'Mãe', email: '', foto: null });
+            setIsModalOpen(true);
+          }}><Plus size={16} /> Novo Responsável</Button>
+        </RoleGuard>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '1rem' }}>
@@ -404,35 +410,39 @@ export const Responsaveis = () => {
                           <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Matrícula: {aluno.matricula || '-'}</p>
                         </div>
                       </div>
-                      <Button variant="outline" onClick={() => {
-                        if(window.confirm('Desvincular este aluno?')) handleDesvincularAluno(aluno.id);
-                      }} style={{ padding: '0.25rem 0.5rem', color: 'var(--danger)', borderColor: 'var(--danger)' }}>
-                        <Trash2 size={14} />
-                      </Button>
+                      <RoleGuard allowedRoles={['diretor', 'coordenador', 'secretário']}>
+                        <Button variant="outline" onClick={() => {
+                          if(window.confirm('Desvincular este aluno?')) handleDesvincularAluno(aluno.id);
+                        }} style={{ padding: '0.25rem 0.5rem', color: 'var(--danger)', borderColor: 'var(--danger)' }}>
+                          <Trash2 size={14} />
+                        </Button>
+                      </RoleGuard>
                     </div>
                   );
                 })}
               </div>
 
-              <div style={{ padding: '1rem', border: '1px dashed var(--border-color)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--bg-primary)' }}>
-                <h5 style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>Vincular Novo Aluno</h5>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <select 
-                    style={{ ...PAGE_STYLES.searchInput, flex: 1 }}
-                    value={idAlunoVincular}
-                    onChange={(e) => setIdAlunoVincular(e.target.value)}
-                  >
-                    <option value="">Selecione um aluno...</option>
-                    {allAlunos
-                      .filter(a => !alunosVinculados.some(v => v.id === a.id))
-                      .map(a => (
-                        <option key={a.id} value={a.id}>{a.nome} ({a.matricula})</option>
-                      ))
-                    }
-                  </select>
-                  <Button onClick={handleVincularAluno} disabled={!idAlunoVincular}>Vincular</Button>
+              <RoleGuard allowedRoles={['diretor', 'coordenador', 'secretário']}>
+                <div style={{ padding: '1rem', border: '1px dashed var(--border-color)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--bg-primary)' }}>
+                  <h5 style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>Vincular Novo Aluno</h5>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <select 
+                      style={{ ...PAGE_STYLES.searchInput, flex: 1 }}
+                      value={idAlunoVincular}
+                      onChange={(e) => setIdAlunoVincular(e.target.value)}
+                    >
+                      <option value="">Selecione um aluno...</option>
+                      {allAlunos
+                        .filter(a => !alunosVinculados.some(v => v.id === a.id))
+                        .map(a => (
+                          <option key={a.id} value={a.id}>{a.nome} ({a.matricula})</option>
+                        ))
+                      }
+                    </select>
+                    <Button onClick={handleVincularAluno} disabled={!idAlunoVincular}>Vincular</Button>
+                  </div>
                 </div>
-              </div>
+              </RoleGuard>
             </div>
             <div style={PAGE_STYLES.modalActions}>
               <Button onClick={() => setIsViewModalOpen(false)}>Fechar</Button>

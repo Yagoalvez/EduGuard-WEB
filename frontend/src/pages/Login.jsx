@@ -21,6 +21,8 @@ export function Login() {
       const loggedUser = await login(email, senha);
       if (loggedUser?.tipo_usuario === 'responsavel') {
         navigate('/responsavel/portal');
+      } else if (loggedUser?.funcao?.toLowerCase() === 'porteiro') {
+        navigate('/ponto');
       } else {
         navigate('/dashboard');
       }

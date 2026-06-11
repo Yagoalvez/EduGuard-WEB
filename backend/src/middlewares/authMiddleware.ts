@@ -45,7 +45,7 @@ export function authMiddleware(
     ) as TokenPayload
 
     req.idResponsavel = decoded.id
-    req.user = { id: decoded.id, tipo_usuario: decoded.tipo_usuario, funcao: decoded.funcao || "" }
+    req.user = { id: decoded.id, tipo_usuario: decoded.tipo_usuario, funcao: (decoded.funcao || "").toLowerCase().trim() }
 
     return next()
 

@@ -25,11 +25,13 @@ export function Layout() {
     user?.funcao?.toLowerCase()
   );
 
+  const isPorteiro = user?.funcao?.toLowerCase() === 'porteiro';
+
   const mainMenuItems = [
     { path: '/alunos', name: 'Alunos', icon: GraduationCap },
     { path: '/responsaveis', name: 'Famílias', icon: HeartHandshake },
     ...(isDiretoria ? [{ path: '/equipe', name: 'Equipe', icon: Briefcase }] : []),
-    { path: '/turmas', name: 'Turmas', icon: Users },
+    ...(!isPorteiro ? [{ path: '/turmas', name: 'Turmas', icon: Users }] : []),
   ];
 
   const isPontoAllowed = ['diretor', 'porteiro'].includes(
@@ -38,12 +40,14 @@ export function Layout() {
 
   const operacoesMenuItems = [
     ...(isPontoAllowed ? [{ path: '/ponto', name: 'Registro de Frequência', icon: Clock }] : []),
-    { path: '/rotina', name: 'Rotina Diária', icon: ClipboardList },
-    { path: '/avisos', name: 'Comunicados', icon: Bell },
+    ...(!isPorteiro ? [
+      { path: '/rotina', name: 'Rotina Diária', icon: ClipboardList },
+      { path: '/avisos', name: 'Comunicados', icon: Bell }
+    ] : []),
   ];
 
   const consultasMenuItems = [
-    { path: '/historico', name: 'Histórico', icon: History },
+    ...(!isPorteiro ? [{ path: '/historico', name: 'Histórico', icon: History }] : []),
     ...(isDiretoria ? [{ path: '/logs', name: 'Logs do Sistema', icon: FileText }] : []),
   ];
 
@@ -116,9 +120,9 @@ export function Layout() {
 
         {/* Navigation */}
         <nav className="sidebar-nav">
-          {renderNavSection('Principal', mainMenuItems)}
-          {renderNavSection('Operações', operacoesMenuItems)}
-          {renderNavSection('Consultas', consultasMenuItems)}
+          {mainMenuItems.length > 0 && renderNavSection('Principal', mainMenuItems)}
+          {operacoesMenuItems.length > 0 && renderNavSection('Operações', operacoesMenuItems)}
+          {consultasMenuItems.length > 0 && renderNavSection('Consultas', consultasMenuItems)}
         </nav>
 
         {/* Footer with User Info */}
