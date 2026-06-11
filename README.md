@@ -15,6 +15,8 @@ O EduGuard tem como objetivo facilitar a organização da escola, melhorar a com
 * Autenticação com token JWT.
 * Controle de acesso por perfil.
 * Bloqueio de login para usuários inativos.
+* Proteção de rotas no frontend.
+* Validação de permissões no backend.
 
 ### Alunos
 
@@ -25,6 +27,7 @@ O EduGuard tem como objetivo facilitar a organização da escola, melhorar a com
 * Filtro por turma.
 * Ativação e desativação.
 * Remoção segura, preservando histórico quando necessário.
+* Visualização de dados básicos para usuários autorizados.
 
 ### Responsáveis / Famílias
 
@@ -36,6 +39,7 @@ O EduGuard tem como objetivo facilitar a organização da escola, melhorar a com
 * Reativação de acesso.
 * Remoção segura quando permitido.
 * Bloqueio de acesso para responsáveis inativos.
+* Visualização dos alunos vinculados.
 
 ### Funcionários / Equipe
 
@@ -56,6 +60,7 @@ O EduGuard tem como objetivo facilitar a organização da escola, melhorar a com
 * Enturmação de alunos.
 * Remoção de aluno da turma.
 * Busca rápida de aluno por nome ou matrícula.
+* Organização de alunos por série, turno e turma.
 
 ### Registro de Frequência
 
@@ -67,7 +72,8 @@ O EduGuard tem como objetivo facilitar a organização da escola, melhorar a com
 * Filtro por turma.
 * Busca por nome ou matrícula.
 * Exibição dos registros computados do dia.
-* Acesso restrito a Diretor e Porteiro.
+* Consulta de alunos presentes no dia.
+* Acesso funcional restrito a Diretor e Porteiro, respeitando as permissões de cada perfil.
 
 ### Rotina Diária
 
@@ -88,6 +94,7 @@ O EduGuard tem como objetivo facilitar a organização da escola, melhorar a com
 * Resposta de responsáveis.
 * Visualização das respostas pelos funcionários autorizados.
 * Remoção de comunicados.
+* Controle de acesso conforme perfil do usuário.
 
 ### Portal do Responsável
 
@@ -96,6 +103,7 @@ O EduGuard tem como objetivo facilitar a organização da escola, melhorar a com
 * Visualização de comunicados permitidos.
 * Resposta a comunicados.
 * Bloqueio de acesso para responsável inativo.
+* Restrição de dados para impedir acesso a alunos não vinculados.
 
 ### Histórico do Aluno
 
@@ -103,6 +111,7 @@ O EduGuard tem como objetivo facilitar a organização da escola, melhorar a com
 * Timeline com registros de rotina.
 * Filtro por turma.
 * Seleção de aluno por turma.
+* Consulta de informações consolidadas do aluno.
 
 ### Logs do Sistema
 
@@ -135,13 +144,33 @@ Pode acessar e gerenciar:
 
 ### Porteiro
 
-Perfil voltado ao controle de entrada e saída.
+Perfil voltado exclusivamente ao controle de entrada e saída dos alunos.
 
-Pode acessar:
+Pode acessar funcionalmente:
 
-* Alunos.
-* Responsáveis.
 * Registro de Frequência.
+
+Pode visualizar, quando necessário para conferência no fluxo de frequência:
+
+* Dados básicos de alunos.
+* Dados básicos de responsáveis vinculados.
+
+Não pode:
+
+* Cadastrar alunos.
+* Editar alunos.
+* Remover alunos.
+* Cadastrar responsáveis.
+* Editar responsáveis.
+* Remover responsáveis.
+* Cadastrar funcionários.
+* Editar funcionários.
+* Remover funcionários.
+* Gerenciar turmas.
+* Acessar logs do sistema.
+* Acessar rotina diária como módulo de gestão.
+* Acessar comunicados como módulo de gestão.
+* Acessar funcionalidades administrativas.
 
 ### Professor
 
@@ -153,6 +182,8 @@ Pode acessar módulos permitidos conforme as regras do sistema, sem acesso ao Re
 
 Perfis administrativos com acesso conforme permissões definidas no sistema.
 
+Podem acessar funcionalidades administrativas de acordo com o nível de permissão atribuído.
+
 ### Responsável
 
 Perfil externo, com acesso apenas ao Portal do Responsável.
@@ -163,6 +194,25 @@ Pode visualizar:
 * Comunicados permitidos.
 * Resumo/rotina quando disponível.
 * Responder comunicados.
+
+Não pode acessar dados de outros alunos ou áreas administrativas do sistema.
+
+---
+
+## Regras de acesso
+
+O sistema utiliza controle de acesso por perfil.
+
+As principais regras são:
+
+* Usuários não autenticados não acessam rotas protegidas.
+* Funcionários inativos não conseguem realizar login.
+* Responsáveis inativos não conseguem acessar o portal.
+* Responsáveis visualizam apenas alunos vinculados a eles.
+* Porteiro possui acesso funcional somente ao Registro de Frequência.
+* Diretor possui acesso administrativo completo.
+* Ações sensíveis são protegidas por validações no backend.
+* O frontend oculta opções de menu não permitidas para cada perfil.
 
 ---
 
@@ -356,6 +406,37 @@ cd frontend
 npm run build
 ```
 
+### Verificar status do Git
+
+```bash
+git status
+```
+
+### Commit das alterações
+
+```bash
+git add .
+git commit -m "Atualiza documentação do EduGuard"
+git push
+```
+
+---
+
+## Validação do sistema
+
+Após a remoção dos módulos inativos de Dashboard e Medicação, o sistema foi validado sem referências órfãs.
+
+Foram realizadas as seguintes verificações:
+
+* Busca por referências antigas no projeto.
+* Correção de rotas e menus.
+* Build do frontend.
+* Execução do backend na porta 3000.
+* Validação de permissões de acesso.
+* Execução do script `testGatekeeper.js`.
+
+O script de validação do Porteiro passou em 20 cenários, confirmando a separação correta entre os acessos do Porteiro e do Diretor.
+
 ---
 
 ## Observações sobre segurança
@@ -366,6 +447,8 @@ npm run build
 * O acesso ao sistema é controlado por JWT.
 * Perfis possuem permissões diferentes.
 * Responsáveis acessam apenas dados vinculados a eles.
+* Ações administrativas são restritas a usuários autorizados.
+* O Porteiro não possui permissão para gerenciar cadastros administrativos.
 
 ---
 
@@ -409,4 +492,14 @@ Senha: 12345678
 
 Projeto web funcional com foco em gestão escolar infantil, autenticação por perfil, controle de frequência, rotina diária, comunicados, histórico e logs.
 
-O sistema está preparado para evolução futura, incluindo integração com versão mobile.
+O sistema está estável sem os módulos de Dashboard e Medicação, que foram removidos por não fazerem mais parte do escopo ativo da aplicação.
+
+O projeto está preparado para evolução futura, incluindo integração com versão mobile e expansão de novas funcionalidades conforme necessidade da escola.
+
+---
+
+## Autor
+
+Projeto desenvolvido para fins acadêmicos.
+
+**EduGuard Web** — Sistema de gestão escolar infantil.
